@@ -1,5 +1,7 @@
 services:
   app:
-    build: src
+    build:
+      context: src
+      dockerfile: src/Dockefile.m1
     ports:
       - '8008:80'
