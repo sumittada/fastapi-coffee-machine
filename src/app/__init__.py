@@ -15,4 +15,3 @@ coffee_tasks_domain = CoffeeTaskDomain(coffee_tasks_repository)
 coffee_tasks_router = CoffeeTasksRouter(coffee_tasks_domain)
 
 app.include_router(coffee_tasks_router.router)
-

@@ -3,7 +3,8 @@ from uuid import uuid4
 from app.coffee_tasks.repository import CoffeeTasksRepository
 from app.coffee_tasks.models import CoffeeTasksModel
 
-class CoffeeTaskDomain():
+
+class CoffeeTaskDomain:
     def __init__(self, repository: CoffeeTasksRepository) -> None:
         self.__repository = repository
 

@@ -35,15 +35,13 @@ class FastAPIStack(Stack):
         )
 
         scalable_target = self.ecs_service.service.auto_scale_task_count(
-            min_capacity=1,
-            max_capacity=20
+            min_capacity=1, max_capacity=20
         )
 
-        scalable_target.scale_on_cpu_utilization("CpuScaling",
-            target_utilization_percent=50
+        scalable_target.scale_on_cpu_utilization(
+            "CpuScaling", target_utilization_percent=50
         )
 
-        scalable_target.scale_on_memory_utilization("MemoryScaling",
-            target_utilization_percent=50
+        scalable_target.scale_on_memory_utilization(
+            "MemoryScaling", target_utilization_percent=50
         )
-
