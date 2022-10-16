@@ -5,3 +5,30 @@ services:
       dockerfile: Dockerfile.m1
     ports:
       - '8008:80'
+    depends_on:
+      - ddb
+    environment:
+      - DYNAMO_ENDPOINT=http://ddb:8000
+      - AWS_REGION=eu-central-1
+      - AWS_ACCESS_KEY_ID=dummykeytextneededbyddbadmin
+      - AWS_SECRET_ACCESS_KEY=dummysecrettextneededbyddbadmin
+    volumes:
+        - './src:/src:rw'
+  ddb:
+    image: amazon/dynamodb-local
+    restart: unless-stopped
+    ports:
+      - 8080:8000
+  ddb_admin:
+    build:
+      context: src
+      dockerfile: Dockerfile.ddb_admin
+    ports:
+    - 8081:8001
+    environment:
+      - DYNAMO_ENDPOINT=http://ddb:8000
+      - AWS_REGION=eu-central-1
+      - AWS_ACCESS_KEY_ID=dummykeytextneededbyddbadmin
+      - AWS_SECRET_ACCESS_KEY=dummysecrettextneededbyddbadmin
+    depends_on:
+      - ddb
