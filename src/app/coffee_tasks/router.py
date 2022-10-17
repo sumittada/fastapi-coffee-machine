@@ -30,8 +30,7 @@ class CoffeeTasksRouter:
             auth_result = VerifyToken(token.credentials).verify()
 
             if auth_result.get("status"):
-                auth_result.status_code = status.HTTP_400_BAD_REQUEST
-                return auth_result
+                raise HTTPException(status_code=401, detail="Bad auth token")
             return self.__coffee_tasks_domain.create_coffee_task(coffee_tasks_model)
 
         @api_router.get("/get/{coffee_task_uid}")
@@ -46,8 +45,7 @@ class CoffeeTasksRouter:
             auth_result = VerifyToken(token.credentials).verify()
 
             if auth_result.get("status"):
-                auth_result.status_code = status.HTTP_400_BAD_REQUEST
-                return auth_result
+                raise HTTPException(status_code=401, detail="Bad auth token")
             return self.__coffee_tasks_domain.update_coffee_task(coffee_tasks_model)
 
         @api_router.delete("/delete/{coffee_task_uid}")
@@ -55,8 +53,7 @@ class CoffeeTasksRouter:
             auth_result = VerifyToken(token.credentials).verify()
 
             if auth_result.get("status"):
-                auth_result.status_code = status.HTTP_400_BAD_REQUEST
-                return auth_result
+                raise HTTPException(status_code=401, detail="Bad auth token")
             return self.__coffee_tasks_domain.delete_coffee_task(coffee_task_uid)
 
         return api_router
