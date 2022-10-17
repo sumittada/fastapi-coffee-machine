@@ -1,8 +1,12 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends, FastAPI, Response, status
 from fastapi import HTTPException
+from fastapi.security import HTTPBearer
 
 from app.coffee_tasks.models import CoffeeTasksModel
 from app.coffee_tasks.views import CoffeeTaskDomain
+from app.common.auth_utils import VerifyToken
+
+token_auth_scheme = HTTPBearer()
 
 
 class CoffeeTasksRouter:
@@ -22,7 +26,12 @@ class CoffeeTasksRouter:
             return self.__coffee_tasks_domain.get_all()
 
         @api_router.post("/create")
-        def create_coffee_task(coffee_tasks_model: CoffeeTasksModel):
+        def create_coffee_task(coffee_tasks_model: CoffeeTasksModel,response: Response, token: str = Depends(token_auth_scheme)):
+            auth_result = VerifyToken(token.credentials).verify()
+
+            if auth_result.get("status"):
+                auth_result.status_code = status.HTTP_400_BAD_REQUEST
+                return auth_result
             return self.__coffee_tasks_domain.create_coffee_task(coffee_tasks_model)
 
         @api_router.get("/get/{coffee_task_uid}")
@@ -33,11 +42,21 @@ class CoffeeTasksRouter:
                 raise HTTPException(status_code=400, detail="No coffee_task found")
 
         @api_router.put("/update")
-        def update_coffee_task(coffee_tasks_model: CoffeeTasksModel):
+        def update_coffee_task(coffee_tasks_model: CoffeeTasksModel,response: Response, token: str = Depends(token_auth_scheme)):
+            auth_result = VerifyToken(token.credentials).verify()
+
+            if auth_result.get("status"):
+                auth_result.status_code = status.HTTP_400_BAD_REQUEST
+                return auth_result
             return self.__coffee_tasks_domain.update_coffee_task(coffee_tasks_model)
 
         @api_router.delete("/delete/{coffee_task_uid}")
-        def delete_coffee_task(coffee_task_uid: str):
+        def delete_coffee_task(coffee_task_uid: str, response: Response, token: str = Depends(token_auth_scheme)):
+            auth_result = VerifyToken(token.credentials).verify()
+
+            if auth_result.get("status"):
+                auth_result.status_code = status.HTTP_400_BAD_REQUEST
+                return auth_result
             return self.__coffee_tasks_domain.delete_coffee_task(coffee_task_uid)
 
         return api_router
