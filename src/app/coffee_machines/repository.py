@@ -37,7 +37,7 @@ class CoffeeMachinesRepository:
             ExpressionAttributeValues={
                 ":name": coffee_machine.get("name"),
                 ":machine_state": coffee_machine.get("machine_state"),
-                ":machine_error": coffee_machine.get("machine_error")
+                ":machine_error": coffee_machine.get("machine_error"),
             },
             ReturnValues="UPDATED_NEW",
         )

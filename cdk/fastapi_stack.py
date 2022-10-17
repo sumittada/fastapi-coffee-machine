@@ -28,23 +28,29 @@ class FastAPIStack(Stack):
         )
 
         hosted_zone_id = "Z05032842SUPZY34EENCQ"
-        domain_name="coffee.sumit.at"
+        domain_name = "coffee.sumit.at"
 
-        hosted_zone = route53.HostedZone.from_hosted_zone_attributes(self, "CoffeeHostedZone",
+        hosted_zone = route53.HostedZone.from_hosted_zone_attributes(
+            self,
+            "CoffeeHostedZone",
             hosted_zone_id=hosted_zone_id,
-            zone_name="sumit.at"
+            zone_name="sumit.at",
         )
 
-        self.record = route53.CnameRecord(self, "CoffeeCnameRecord",
+        self.record = route53.CnameRecord(
+            self,
+            "CoffeeCnameRecord",
             record_name="coffeeRecord",
             zone=hosted_zone,
-            domain_name=domain_name
+            domain_name=domain_name,
         )
 
-        cert = acm.DnsValidatedCertificate(self, "CoffeeCertificate",
+        cert = acm.DnsValidatedCertificate(
+            self,
+            "CoffeeCertificate",
             domain_name=domain_name,
             hosted_zone=hosted_zone,
-            region="eu-central-1"
+            region="eu-central-1",
         )
 
         self.ecs_service = ecs_patterns.ApplicationLoadBalancedFargateService(
@@ -56,17 +62,15 @@ class FastAPIStack(Stack):
             desired_count=1,
             task_image_options=image,
             domain_name=domain_name,
-            domain_zone=hosted_zone
+            domain_zone=hosted_zone,
         )
 
-
-        self.sslListener = self.ecs_service.load_balancer.add_listener("coffeeTLSListener",
+        self.sslListener = self.ecs_service.load_balancer.add_listener(
+            "coffeeTLSListener",
             certificates=[cert],
             protocol=elbv2.ApplicationProtocol.HTTPS,
-            default_target_groups=[self.ecs_service.target_group]
-
-            )
-
+            default_target_groups=[self.ecs_service.target_group],
+        )
 
         scalable_target = self.ecs_service.service.auto_scale_task_count(
             min_capacity=1, max_capacity=20

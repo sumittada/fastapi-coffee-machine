@@ -13,11 +13,13 @@ class MachineStatesType(str, Enum):
     ready = "ready"
     error = "error"
 
+
 class MachineErrorTypes(str, Enum):
     beans_empty = "beans_empty"
     water_empty = "water_empty"
     bin_full = "bin_full"
     sump_full = "sump_full"
+
 
 class CoffeeMachinesModel(BaseModel):
     uid: UUID = Field(default_factory=uuid4)
@@ -26,7 +28,8 @@ class CoffeeMachinesModel(BaseModel):
         default="ready", example="Current state of machine"
     )
     machine_error: Optional[MachineErrorTypes] = Field(
-        default=None, example="Error type, if there is an error")
+        default=None, example="Error type, if there is an error"
+    )
 
     class Config:
         use_enum_values = True

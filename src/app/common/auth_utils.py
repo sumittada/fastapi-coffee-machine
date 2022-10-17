@@ -13,7 +13,8 @@ def set_up():
     }
     return config
 
-class VerifyToken():
+
+class VerifyToken:
     """Does all the token verification using PyJWT"""
 
     def __init__(self, token):
@@ -28,9 +29,7 @@ class VerifyToken():
     def verify(self):
         # This gets the 'kid' from the passed token
         try:
-            self.signing_key = self.jwks_client.get_signing_key_from_jwt(
-                self.token
-            ).key
+            self.signing_key = self.jwks_client.get_signing_key_from_jwt(self.token).key
         except jwt.exceptions.PyJWKClientError as error:
             return {"status": "error", "msg": error.__str__()}
         except jwt.exceptions.DecodeError as error:

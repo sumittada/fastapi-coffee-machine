@@ -26,7 +26,11 @@ class CoffeeTasksRouter:
             return self.__coffee_tasks_domain.get_all()
 
         @api_router.post("/create")
-        def create_coffee_task(coffee_tasks_model: CoffeeTasksModel,response: Response, token: str = Depends(token_auth_scheme)):
+        def create_coffee_task(
+            coffee_tasks_model: CoffeeTasksModel,
+            response: Response,
+            token: str = Depends(token_auth_scheme),
+        ):
             auth_result = VerifyToken(token.credentials).verify()
 
             if auth_result.get("status"):
@@ -41,7 +45,11 @@ class CoffeeTasksRouter:
                 raise HTTPException(status_code=400, detail="No coffee_task found")
 
         @api_router.put("/update")
-        def update_coffee_task(coffee_tasks_model: CoffeeTasksModel,response: Response, token: str = Depends(token_auth_scheme)):
+        def update_coffee_task(
+            coffee_tasks_model: CoffeeTasksModel,
+            response: Response,
+            token: str = Depends(token_auth_scheme),
+        ):
             auth_result = VerifyToken(token.credentials).verify()
 
             if auth_result.get("status"):
@@ -49,7 +57,11 @@ class CoffeeTasksRouter:
             return self.__coffee_tasks_domain.update_coffee_task(coffee_tasks_model)
 
         @api_router.delete("/delete/{coffee_task_uid}")
-        def delete_coffee_task(coffee_task_uid: str, response: Response, token: str = Depends(token_auth_scheme)):
+        def delete_coffee_task(
+            coffee_task_uid: str,
+            response: Response,
+            token: str = Depends(token_auth_scheme),
+        ):
             auth_result = VerifyToken(token.credentials).verify()
 
             if auth_result.get("status"):
