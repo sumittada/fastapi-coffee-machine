@@ -7,8 +7,8 @@ def set_up():
 
     config = {
         "DOMAIN": os.getenv("DOMAIN", "coffee.sumit.fi"),
-        "API_AUDIENCE": os.getenv("API_AUDIENCE", "coffee.sumit.fi"),
-        "ISSUER": os.getenv("ISSUER", "https://coffee.sumit.fi/"),
+        "API_AUDIENCE": os.getenv("API_AUDIENCE", "https://coffee.sumit.fi"),
+        "ISSUER": os.getenv("ISSUER", "https://dev-sjlng50n.us.auth0.com/"),
         "ALGORITHMS": os.getenv("ALGORITHMS", "RS256"),
     }
     return config

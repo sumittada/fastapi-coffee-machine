@@ -4,6 +4,9 @@ from pydantic import BaseModel
 from enum import Enum
 
 
+from app.coffee_machines.models import CoffeeMachinesModel
+
+
 class CoffeeType(str, Enum):
     cappuccino = "cappuccino"
     espresso = "espresso"
@@ -31,6 +34,7 @@ class BeansChoiceType(str, Enum):
 
 class CoffeeTasksModel(BaseModel):
     uid: UUID = Field(default_factory=uuid4)
+    machine_uid: UUID = Field(example="UID of an existing coffee machine")
     coffee_type: CoffeeType = Field(
         default="espresso", example="Choices: cappuccino, espresso, cortado, latte"
     )

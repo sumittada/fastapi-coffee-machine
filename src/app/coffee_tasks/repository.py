@@ -1,6 +1,8 @@
 from botocore.exceptions import ClientError
 from boto3.resources.base import ServiceResource
 
+from app.coffee_machines.repository import CoffeeMachinesRepository
+
 
 class CoffeeTasksRepository:
     def __init__(self, db: ServiceResource) -> None:
@@ -20,6 +22,11 @@ class CoffeeTasksRepository:
             raise ValueError(e.response["Error"]["Message"])
 
     def create_coffee_task(self, coffee_task: dict):
+        # First check if coffee machine exists
+        try:
+            CoffeeMachinesRepository.get_coffee_machine(coffee_task.get("uid"))
+        except ClientError as e:
+            raise ValueError(e.response["Error"]["Message"])
         table = self.__db.Table("coffeeMachineTasks")
         response = table.put_item(Item=coffee_task)
         return response
