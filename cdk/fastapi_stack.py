@@ -3,7 +3,10 @@ from constructs import Construct
 
 import aws_cdk.aws_ec2 as ec2
 import aws_cdk.aws_ecs as ecs
+import aws_cdk.aws_certificatemanager as acm
+import aws_cdk.aws_route53 as route53
 import aws_cdk.aws_ecs_patterns as ecs_patterns
+import aws_cdk.aws_elasticloadbalancingv2 as elbv2
 
 
 class FastAPIStack(Stack):
@@ -24,6 +27,26 @@ class FastAPIStack(Stack):
             )
         )
 
+        hosted_zone_id = "Z05032842SUPZY34EENCQ"
+        domain_name="coffee.sumit.at"
+
+        hosted_zone = route53.HostedZone.from_hosted_zone_attributes(self, "CoffeeHostedZone",
+            hosted_zone_id=hosted_zone_id,
+            zone_name="sumit.at"
+        )
+
+        self.record = route53.CnameRecord(self, "CoffeeCnameRecord",
+            record_name="coffeeRecord",
+            zone=hosted_zone,
+            domain_name=domain_name
+        )
+
+        cert = acm.DnsValidatedCertificate(self, "CoffeeCertificate",
+            domain_name=domain_name,
+            hosted_zone=hosted_zone,
+            region="eu-central-1"
+        )
+
         self.ecs_service = ecs_patterns.ApplicationLoadBalancedFargateService(
             self,
             "FastAPIService",
@@ -32,7 +55,18 @@ class FastAPIStack(Stack):
             memory_limit_mib=512,
             desired_count=1,
             task_image_options=image,
+            domain_name=domain_name,
+            domain_zone=hosted_zone
         )
+
+
+        self.sslListener = self.ecs_service.load_balancer.add_listener("coffeeTLSListener",
+            certificates=[cert],
+            protocol=elbv2.ApplicationProtocol.HTTPS,
+            default_target_groups=[self.ecs_service.target_group]
+
+            )
+
 
         scalable_target = self.ecs_service.service.auto_scale_task_count(
             min_capacity=1, max_capacity=20
